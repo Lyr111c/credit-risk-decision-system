@@ -2,7 +2,7 @@
 
 基于公开信用风险数据，构建从数据审计、违约概率建模、信用评分卡、模型比较与概率校准，到审批阈值和假设风险收益模拟的可复现流程。
 
-> **Status:** 项目初始化阶段。当前仓库仅包含项目结构、数据来源说明和依赖定义，尚未产出模型结果。
+> **Status:** 数据基础阶段已完成。仓库已包含经过核验的数据来源与许可证说明、字段字典、可复现下载、数据加载、质量约束、自动化测试和实际数据审计报告；尚未进入 EDA 或建模阶段。
 
 ## English Summary
 
@@ -16,7 +16,7 @@ This portfolio project develops a reproducible credit-risk decision workflow usi
 
 ## 数据来源
 
-第一版计划使用 UCI Machine Learning Repository 的 [Default of Credit Card Clients](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients) 数据集。原始数据默认不提交到仓库；下载方式、字段说明和使用边界记录在 [`data/README.md`](data/README.md)。
+第一版使用 UCI Machine Learning Repository 的 [Default of Credit Card Clients](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients) 数据集（CC BY 4.0）。原始数据不提交到仓库；下载与校验方式记录在 [`data/README.md`](data/README.md)，字段定义与未文档化编码记录在 [`references/data_dictionary.md`](references/data_dictionary.md)。
 
 ## 第一版范围
 
@@ -56,7 +56,16 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-当前阶段尚未验证依赖安装；完成 Python 3.11 环境配置后再执行验证。
+安装完成后，下载并审计数据：
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m credit_risk.data download
+python -m credit_risk.data audit --output reports/data_quality_report.md
+python -m pytest -q
+```
+
+下载命令会同时验证官方 ZIP 和内部 XLS 的 SHA-256。实际审计结果见 [`reports/data_quality_report.md`](reports/data_quality_report.md)，原始数据仍只保存在本地 `data/raw/`。
 
 ## 仓库结构
 
