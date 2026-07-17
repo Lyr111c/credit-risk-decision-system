@@ -42,6 +42,7 @@ data/**/*.parquet
 data/**/*.feather
 data/**/*.pkl
 data/**/*.pickle
+data/**/*.zip
 
 # Generated artifacts
 reports/figures/*
