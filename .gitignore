@@ -48,4 +48,5 @@ data/**/*.zip
 # Generated artifacts
 reports/figures/*
 !reports/figures/.gitkeep
+!reports/figures/*.png
 models/
