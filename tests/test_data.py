@@ -105,11 +105,21 @@ def test_format_audit_report_contains_key_findings() -> None:
 
     report = format_audit_report(frame)
 
-    assert "# Data Quality Report" in report
-    assert "2 rows and 25 columns" in report
-    assert "50.00%" in report
-    assert "No missing cells were detected" in report
-    assert "not automatically removed" in report
+    chinese_title = "# 数据质量报告（中文）"
+    english_title = "# Data Quality Report (English)"
+    assert report.startswith(chinese_title)
+    assert report.index(chinese_title) < report.index(english_title)
+
+    chinese_report, english_report = report.split(english_title, maxsplit=1)
+    assert "2 行、25 列" in chinese_report
+    assert "50.00%" in chinese_report
+    assert "未检测到缺失单元格" in chinese_report
+    assert "不会自动删除" in chinese_report
+
+    assert "2 rows and 25 columns" in english_report
+    assert "50.00%" in english_report
+    assert "No missing cells were detected" in english_report
+    assert "not automatically removed" in english_report
 
 
 def test_download_dataset_verifies_archive_and_extracts_expected_file(
