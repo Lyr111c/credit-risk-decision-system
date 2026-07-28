@@ -32,6 +32,7 @@ Thumbs.db
 # Local working notes and handoff material
 work/
 .worktrees/
+/AGENTS.md
 
 # Data files are obtained locally; only documentation is versioned.
 data/**/*.csv
