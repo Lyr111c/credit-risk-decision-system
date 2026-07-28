@@ -1,4 +1,4 @@
-# First-stage data audit, analysis, and testing dependencies.
+# Data audit, EDA, baseline modeling, notebook, and testing dependencies.
 numpy>=1.26,<3
 pandas>=2.2,<3
 scikit-learn>=1.5,<2
