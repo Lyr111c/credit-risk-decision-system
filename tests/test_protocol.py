@@ -58,6 +58,10 @@ def test_repository_config_is_valid_and_complete() -> None:
     assert config.woe.max_bins == 5
     assert config.woe.min_bin_fraction == pytest.approx(0.05)
     assert config.woe.smoothing == pytest.approx(0.5)
+    assert config.model_search.scorecard_c_values == (0.01, 0.1, 1.0, 10.0)
+    assert config.score_mapping.base_score == 600
+    assert config.score_mapping.base_odds == 20
+    assert config.score_mapping.pdo == 50
     assert config.feature_columns == FEATURE_COLUMNS
     assert len(config.sha256) == 64
 

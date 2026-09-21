@@ -1,0 +1,182 @@
+{
+  "run_id": "p2_scorecard_20260921",
+  "data_sha256": "30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933",
+  "config_sha256": "132eb3dbf392cb1f54a4e95a3d92abb2ff51a8587bb76f8904164aad364a39ea",
+  "split_assignment_sha256": "dddcf606116ff3a5c91be58c126598234b6483a06a961c30a8cff2aea3a8b692",
+  "training_rows": 18000,
+  "validation_rows": 6000,
+  "test_labels_used": false,
+  "selected_c": 0.01,
+  "mapping": {
+    "base_score": 600.0,
+    "base_odds": 20.0,
+    "pdo": 50.0,
+    "factor_b": 72.13475204444818,
+    "offset_a": 383.9035952556319,
+    "base_points": 473.4575853341247
+  },
+  "intercept": -1.2414819146160119,
+  "coefficients": {
+    "sex": -0.08466167024479805,
+    "education": -0.21685854164457122,
+    "marital_status": -0.05719556532565239,
+    "repayment_status_sep": -0.7352863166495313,
+    "repayment_status_aug": -0.04741955874523786,
+    "repayment_status_jul": -0.17979426448297264,
+    "repayment_status_jun": -0.11578044485553567,
+    "repayment_status_may": -0.14652551762056426,
+    "repayment_status_apr": -0.20536169947302502,
+    "credit_limit": -0.34105937522021057,
+    "age": -0.03512020452906504,
+    "bill_amount_sep": 0.12926154360696362,
+    "bill_amount_aug": 0.11504212362787095,
+    "bill_amount_jul": 0.1248381399431742,
+    "bill_amount_jun": 0.045497870346160534,
+    "bill_amount_may": 0.045519335471425934,
+    "bill_amount_apr": 0.01924516480584608,
+    "payment_amount_sep": -0.19073579574913005,
+    "payment_amount_aug": -0.18272453673468536,
+    "payment_amount_jul": -0.17058076329763808,
+    "payment_amount_jun": -0.1214823058947411,
+    "payment_amount_may": -0.06421901073938065,
+    "payment_amount_apr": -0.13541774057319042
+  },
+  "validation_metrics": {
+    "ordinary_logistic": {
+      "roc_auc": 0.7628728166473179,
+      "average_precision": 0.5371764785701939,
+      "pr_auc": 0.5371764785701939,
+      "ks": 0.4156177215193957,
+      "brier_score": 0.13681555802647966,
+      "threshold": 0.5,
+      "precision": 0.6875934230194319,
+      "recall": 0.346646571213263,
+      "confusion_matrix": {
+        "tn": 4464,
+        "fp": 209,
+        "fn": 867,
+        "tp": 460
+      },
+      "calibration": [
+        {
+          "mean_predicted_probability": 0.07073496756116697,
+          "observed_default_rate": 0.07649253731343283,
+          "count": 1072
+        },
+        {
+          "mean_predicted_probability": 0.14015087379070973,
+          "observed_default_rate": 0.13605230386052303,
+          "count": 3212
+        },
+        {
+          "mean_predicted_probability": 0.24307267323119877,
+          "observed_default_rate": 0.27721088435374147,
+          "count": 588
+        },
+        {
+          "mean_predicted_probability": 0.3407378696391269,
+          "observed_default_rate": 0.35947712418300654,
+          "count": 306
+        },
+        {
+          "mean_predicted_probability": 0.44621992477222855,
+          "observed_default_rate": 0.49019607843137253,
+          "count": 153
+        },
+        {
+          "mean_predicted_probability": 0.5584556834766286,
+          "observed_default_rate": 0.5491803278688525,
+          "count": 122
+        },
+        {
+          "mean_predicted_probability": 0.6414573498389214,
+          "observed_default_rate": 0.6794871794871795,
+          "count": 234
+        },
+        {
+          "mean_predicted_probability": 0.7460269711369668,
+          "observed_default_rate": 0.732484076433121,
+          "count": 157
+        },
+        {
+          "mean_predicted_probability": 0.8419422600466259,
+          "observed_default_rate": 0.7597402597402597,
+          "count": 154
+        },
+        {
+          "mean_predicted_probability": 0.919190773529773,
+          "observed_default_rate": 1.0,
+          "count": 2
+        }
+      ]
+    },
+    "woe_scorecard": {
+      "roc_auc": 0.764752008161171,
+      "average_precision": 0.5270824679177242,
+      "pr_auc": 0.5270824679177242,
+      "ks": 0.4014217866558857,
+      "brier_score": 0.13801526450432447,
+      "threshold": 0.5,
+      "precision": 0.680786686838124,
+      "recall": 0.33911077618688773,
+      "confusion_matrix": {
+        "tn": 4462,
+        "fp": 211,
+        "fn": 877,
+        "tp": 450
+      },
+      "calibration": [
+        {
+          "mean_predicted_probability": 0.0844726418554616,
+          "observed_default_rate": 0.06725663716814159,
+          "count": 1130
+        },
+        {
+          "mean_predicted_probability": 0.13933447745959335,
+          "observed_default_rate": 0.14706804640953278,
+          "count": 3189
+        },
+        {
+          "mean_predicted_probability": 0.24032084584836885,
+          "observed_default_rate": 0.2653927813163482,
+          "count": 471
+        },
+        {
+          "mean_predicted_probability": 0.3454704035779007,
+          "observed_default_rate": 0.31675392670157065,
+          "count": 382
+        },
+        {
+          "mean_predicted_probability": 0.4439732976012589,
+          "observed_default_rate": 0.5149700598802395,
+          "count": 167
+        },
+        {
+          "mean_predicted_probability": 0.5537901765567163,
+          "observed_default_rate": 0.6208530805687204,
+          "count": 211
+        },
+        {
+          "mean_predicted_probability": 0.6459344410772286,
+          "observed_default_rate": 0.6538461538461539,
+          "count": 182
+        },
+        {
+          "mean_predicted_probability": 0.7526597676901704,
+          "observed_default_rate": 0.75,
+          "count": 164
+        },
+        {
+          "mean_predicted_probability": 0.8405957035544892,
+          "observed_default_rate": 0.7578947368421053,
+          "count": 95
+        },
+        {
+          "mean_predicted_probability": 0.9037063780476556,
+          "observed_default_rate": 0.5555555555555556,
+          "count": 9
+        }
+      ]
+    }
+  }
+}

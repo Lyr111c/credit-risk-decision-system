@@ -43,6 +43,21 @@ class WOEConfig:
 
 
 @dataclass(frozen=True)
+class ModelSearchConfig:
+    primary_metric: str
+    secondary_metric: str
+    max_candidates: int
+    scorecard_c_values: tuple[float, ...]
+
+
+@dataclass(frozen=True)
+class ScoreMappingConfig:
+    base_score: float
+    base_odds: float
+    pdo: float
+
+
+@dataclass(frozen=True)
 class ExperimentConfig:
     """Small typed view over the fields used by the P0 implementation."""
 
@@ -57,6 +72,8 @@ class ExperimentConfig:
     split: SplitConfig
     cv: CVConfig
     woe: WOEConfig
+    model_search: ModelSearchConfig
+    score_mapping: ScoreMappingConfig
     raw: dict[str, Any]
 
     @property
@@ -183,13 +200,15 @@ def validate_config(raw: object) -> ExperimentConfig:
     c_values = search.get("scorecard_c_values")
     if not isinstance(c_values, list) or not c_values:
         raise ConfigError("model_search.scorecard_c_values must be a non-empty list")
-    for index, value in enumerate(c_values):
+    validated_c_values = tuple(
         _positive_number(value, f"model_search.scorecard_c_values[{index}]")
+        for index, value in enumerate(c_values)
+    )
 
     score = _mapping(root.get("score_mapping"), "score_mapping")
-    _positive_number(score.get("base_score"), "score_mapping.base_score")
-    _positive_number(score.get("base_odds"), "score_mapping.base_odds")
-    _positive_number(score.get("pdo"), "score_mapping.pdo")
+    base_score = _positive_number(score.get("base_score"), "score_mapping.base_score")
+    base_odds = _positive_number(score.get("base_odds"), "score_mapping.base_odds")
+    pdo = _positive_number(score.get("pdo"), "score_mapping.pdo")
 
     calibration = _mapping(root.get("calibration"), "calibration")
     if calibration.get("method") not in {"sigmoid", "none"}:
@@ -249,6 +268,13 @@ def validate_config(raw: object) -> ExperimentConfig:
         split=SplitConfig(train, validation, test, True),
         cv=CVConfig(folds, True),
         woe=WOEConfig(max_bins, min_bin_fraction, smoothing),
+        model_search=ModelSearchConfig(
+            str(search["primary_metric"]),
+            str(search["secondary_metric"]),
+            max_candidates,
+            validated_c_values,
+        ),
+        score_mapping=ScoreMappingConfig(base_score, base_odds, pdo),
         raw=root,
     )
 
