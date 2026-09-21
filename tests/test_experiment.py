@@ -5,11 +5,14 @@ import numpy as np
 import pandas as pd
 
 from credit_risk.experiment import (
+    evaluate_frozen_models,
     format_model_report,
     generate_model_figures,
     run_baseline_experiment,
+    run_development_experiment,
 )
 from credit_risk.modeling import CATEGORICAL_COLUMNS, NUMERIC_COLUMNS
+from credit_risk.protocol import DevelopmentData, FinalEvaluationData
 
 
 def make_experiment_frame(rows: int = 120) -> pd.DataFrame:
@@ -46,6 +49,27 @@ def test_experiment_uses_one_split_and_training_only_preprocessor_fits() -> None
     assert all(len(values) == 24 for values in result.test_probabilities.values())
 
 
+def test_development_and_explicit_final_evaluation_interfaces() -> None:
+    historical = run_baseline_experiment(make_experiment_frame())
+    development = run_development_experiment(
+        DevelopmentData(
+            historical.splits.X_train,
+            historical.splits.y_train,
+            historical.splits.X_validation,
+            historical.splits.y_validation,
+        )
+    )
+
+    assert not hasattr(development, "test_probabilities")
+    assert not hasattr(development, "test_metrics")
+    final = evaluate_frozen_models(
+        development,
+        FinalEvaluationData(historical.splits.X_test, historical.splits.y_test),
+    )
+    assert set(final.test_metrics) == set(development.models)
+    assert all(len(values) == 24 for values in final.test_probabilities.values())
+
+
 def test_model_report_is_bilingual_and_contains_observed_metrics() -> None:
     result = run_baseline_experiment(make_experiment_frame())
     report = format_model_report(result)
@@ -60,6 +84,8 @@ def test_model_report_is_bilingual_and_contains_observed_metrics() -> None:
     assert "10 equal-width" in report
     assert "校准箱" in report
     assert "calibration bins" in report
+    assert "Average Precision (AP)" in report
+    assert "not trapezoidal PR-AUC" in report
     assert "不是 OOT" in report
     assert "not OOT" in report
 

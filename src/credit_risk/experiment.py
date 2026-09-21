@@ -28,6 +28,7 @@ from credit_risk.modeling import (
     build_model_pipelines,
     split_dataset,
 )
+from credit_risk.protocol import DevelopmentData, FinalEvaluationData
 
 MODEL_NAMES_ZH = {
     "dummy": "总体违约率虚拟基线",
@@ -58,32 +59,79 @@ class ExperimentResult:
     metrics: dict[str, dict[str, dict[str, object]]]
 
 
-def run_baseline_experiment(frame: pd.DataFrame) -> ExperimentResult:
-    """Fit all candidates on one training split and evaluate frozen holdouts."""
-    splits = split_dataset(frame)
+@dataclass(frozen=True)
+class DevelopmentExperimentResult:
+    """Development-only models and validation outputs, with no test-set fields."""
+
+    models: dict[str, Pipeline]
+    validation_probabilities: dict[str, np.ndarray]
+    validation_metrics: dict[str, dict[str, object]]
+
+
+@dataclass(frozen=True)
+class FinalEvaluationResult:
+    """Explicit test-set outputs for already-fitted, frozen models."""
+
+    test_probabilities: dict[str, np.ndarray]
+    test_metrics: dict[str, dict[str, object]]
+
+
+def run_development_experiment(
+    development: DevelopmentData,
+) -> DevelopmentExperimentResult:
+    """Fit baselines and compare them on validation data without test access."""
     models = build_model_pipelines()
-    validation_probabilities: dict[str, np.ndarray] = {}
-    test_probabilities: dict[str, np.ndarray] = {}
-    metrics: dict[str, dict[str, dict[str, object]]] = {
-        "validation": {},
-        "test": {},
-    }
+    probabilities: dict[str, np.ndarray] = {}
+    metrics: dict[str, dict[str, object]] = {}
     for name, model in models.items():
-        model.fit(splits.X_train, splits.y_train)
-        validation_probability = model.predict_proba(splits.X_validation)[:, 1]
-        test_probability = model.predict_proba(splits.X_test)[:, 1]
-        validation_probabilities[name] = validation_probability
-        test_probabilities[name] = test_probability
-        metrics["validation"][name] = evaluate_binary_classifier(
-            splits.y_validation, validation_probability
+        model.fit(development.X_train, development.y_train)
+        probability = model.predict_proba(development.X_validation)[:, 1]
+        probabilities[name] = probability
+        metrics[name] = evaluate_binary_classifier(development.y_validation, probability)
+    return DevelopmentExperimentResult(models, probabilities, metrics)
+
+
+def evaluate_frozen_models(
+    development_result: DevelopmentExperimentResult,
+    final_data: FinalEvaluationData,
+) -> FinalEvaluationResult:
+    """Explicitly evaluate already-fitted models on the isolated test set."""
+    probabilities: dict[str, np.ndarray] = {}
+    metrics: dict[str, dict[str, object]] = {}
+    for name, model in development_result.models.items():
+        probability = model.predict_proba(final_data.X_test)[:, 1]
+        probabilities[name] = probability
+        metrics[name] = evaluate_binary_classifier(final_data.y_test, probability)
+    return FinalEvaluationResult(probabilities, metrics)
+
+
+def run_baseline_experiment(frame: pd.DataFrame) -> ExperimentResult:
+    """Reproduce the historical baseline, including its already-viewed test set.
+
+    New development and selection code must call ``run_development_experiment``
+    and must not use this compatibility entry point.
+    """
+    splits = split_dataset(frame)
+    development_result = run_development_experiment(
+        DevelopmentData(
+            splits.X_train,
+            splits.y_train,
+            splits.X_validation,
+            splits.y_validation,
         )
-        metrics["test"][name] = evaluate_binary_classifier(splits.y_test, test_probability)
+    )
+    final_result = evaluate_frozen_models(
+        development_result, FinalEvaluationData(splits.X_test, splits.y_test)
+    )
     return ExperimentResult(
         splits=splits,
-        models=models,
-        validation_probabilities=validation_probabilities,
-        test_probabilities=test_probabilities,
-        metrics=metrics,
+        models=development_result.models,
+        validation_probabilities=development_result.validation_probabilities,
+        test_probabilities=final_result.test_probabilities,
+        metrics={
+            "validation": development_result.validation_metrics,
+            "test": final_result.test_metrics,
+        },
     )
 
 
@@ -124,7 +172,7 @@ def generate_model_figures(
     figure, axis = plt.subplots(figsize=(7, 5.5))
     for name, probability in result.test_probabilities.items():
         precision, recall, _ = precision_recall_curve(y_test, probability)
-        auc = result.metrics["test"][name]["pr_auc"]
+        auc = result.metrics["test"][name]["average_precision"]
         axis.step(
             recall,
             precision,
@@ -190,9 +238,9 @@ def _markdown_rows(rows: list[list[str]], headers: list[str]) -> str:
 
 def _metrics_table(result: ExperimentResult, split: str, *, english: bool) -> str:
     headers = (
-        ["Model", "ROC-AUC", "PR-AUC", "KS", "Brier Score", "Precision @ 0.5", "Recall @ 0.5"]
+        ["Model", "ROC-AUC", "Average Precision (AP)", "KS", "Brier Score", "Precision @ 0.5", "Recall @ 0.5"]
         if english
-        else ["模型", "ROC-AUC", "PR-AUC", "KS", "Brier Score", "Precision @ 0.5", "Recall @ 0.5"]
+        else ["模型", "ROC-AUC", "Average Precision (AP)", "KS", "Brier Score", "Precision @ 0.5", "Recall @ 0.5"]
     )
     names = MODEL_NAMES_EN if english else MODEL_NAMES_ZH
     rows = []
@@ -201,7 +249,7 @@ def _metrics_table(result: ExperimentResult, split: str, *, english: bool) -> st
             [
                 names[name],
                 f"{metrics['roc_auc']:.4f}",
-                f"{metrics['pr_auc']:.4f}",
+                f"{metrics['average_precision']:.4f}",
                 f"{metrics['ks']:.4f}",
                 f"{metrics['brier_score']:.4f}",
                 f"{metrics['precision']:.4f}",
@@ -250,7 +298,7 @@ def format_model_report(result: ExperimentResult) -> str:
 
 {_metrics_table(result, 'validation', english=False)}
 
-验证集用于比较固定模型。ROC-AUC 和 PR-AUC 衡量排序，KS 衡量分离，Brier Score 和校准图衡量概率质量；Accuracy 不作为主要指标。
+验证集用于比较固定模型。ROC-AUC 和 Average Precision（AP）衡量排序，KS 衡量分离，Brier Score 和校准图衡量概率质量；Accuracy 不作为主要指标。历史字段 `pr_auc` 实际也是 AP，不是梯形积分 PR-AUC。
 
 校准图使用等宽概率校准箱。尾部校准箱可能包含较少样本，因此单个尾部点的波动不应被过度解释。
 
@@ -292,7 +340,7 @@ Frozen parameters are `random_state=42`, `max_iter={LOGISTIC_MAX_ITER}`, {DEFAUL
 
 {_metrics_table(result, 'validation', english=True)}
 
-Validation data compare the fixed models. ROC-AUC and PR-AUC measure ranking, KS measures separation, and Brier Score plus calibration measure probability quality. Accuracy is not a primary metric.
+Validation data compare the fixed models. ROC-AUC and Average Precision (AP) measure ranking, KS measures separation, and Brier Score plus calibration measure probability quality. Accuracy is not a primary metric. The historical `pr_auc` field is also AP, not trapezoidal PR-AUC.
 
 Calibration uses equal-width probability calibration bins. Tail bins can contain fewer observations, so variation in an individual tail point should not be overinterpreted.
 

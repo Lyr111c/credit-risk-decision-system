@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "random_seed": 42,
+  "data": {
+    "path": "data/raw/default of credit card clients.xls",
+    "sha256": "30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933",
+    "id_column": "customer_id",
+    "target_column": "default_next_month"
+  },
+  "features": {
+    "categorical": [
+      "sex",
+      "education",
+      "marital_status",
+      "repayment_status_sep",
+      "repayment_status_aug",
+      "repayment_status_jul",
+      "repayment_status_jun",
+      "repayment_status_may",
+      "repayment_status_apr"
+    ],
+    "numeric": [
+      "credit_limit",
+      "age",
+      "bill_amount_sep",
+      "bill_amount_aug",
+      "bill_amount_jul",
+      "bill_amount_jun",
+      "bill_amount_may",
+      "bill_amount_apr",
+      "payment_amount_sep",
+      "payment_amount_aug",
+      "payment_amount_jul",
+      "payment_amount_jun",
+      "payment_amount_may",
+      "payment_amount_apr"
+    ]
+  },
+  "split": {
+    "train": 0.6,
+    "validation": 0.2,
+    "test": 0.2,
+    "stratify": true
+  },
+  "cross_validation": {
+    "folds": 5,
+    "shuffle": true
+  },
+  "model_search": {
+    "primary_metric": "roc_auc",
+    "secondary_metric": "brier_score",
+    "max_candidates": 12,
+    "scorecard_c_values": [0.01, 0.1, 1.0, 10.0]
+  },
+  "score_mapping": {
+    "base_score": 600,
+    "base_odds": 20,
+    "pdo": 50
+  },
+  "calibration": {
+    "method": "sigmoid",
+    "folds": 5,
+    "isotonic_sensitivity": false
+  },
+  "selection": {
+    "roc_auc_tolerance": 0.01,
+    "brier_tolerance": 0.001,
+    "complexity_order": ["logistic", "scorecard", "hist_gradient_boosting"]
+  },
+  "strategy": {
+    "threshold_step": 0.005,
+    "approve_when": "pd < threshold",
+    "primary_return": 0.1,
+    "primary_loss": 0.6
+  },
+  "duplicates": {
+    "main_protocol": "retain",
+    "grouped_split_sensitivity_only": true
+  },
+  "metrics": {
+    "average_precision_key": "average_precision",
+    "legacy_pr_auc_alias": "pr_auc",
+    "legacy_pr_auc_definition": "average_precision"
+  }
+}

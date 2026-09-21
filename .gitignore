@@ -50,3 +50,11 @@ reports/figures/*
 !reports/figures/.gitkeep
 !reports/figures/*.png
 models/
+
+# Local customer-level outputs and serialized run artifacts. Reports, manifests,
+# configuration snapshots, and aggregate metrics under outputs/ remain trackable.
+outputs/artifacts/*/split_assignments.csv
+outputs/artifacts/**/*.joblib
+outputs/artifacts/**/*.pkl
+outputs/artifacts/**/*.pickle
+outputs/predictions/*.csv

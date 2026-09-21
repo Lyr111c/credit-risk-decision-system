@@ -1,0 +1,60 @@
+{
+  "run_id": "p0_protocol_20260921",
+  "schema_version": 2,
+  "random_seed": 42,
+  "data_sha256": "30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933",
+  "config_sha256": "3c41d6600a11e8ba303baeb49078a706ff5d3fbea29cab1b6d13923f5e829f4e",
+  "split_assignment_sha256": "dddcf606116ff3a5c91be58c126598234b6483a06a961c30a8cff2aea3a8b692",
+  "split_counts": {
+    "train": 18000,
+    "validation": 6000,
+    "test": 6000
+  },
+  "target_rates": {
+    "train": 0.2212222222222222,
+    "validation": 0.22116666666666668,
+    "test": 0.22116666666666668
+  },
+  "cv": {
+    "folds": 5,
+    "shuffle": true
+  },
+  "features": [
+    "sex",
+    "education",
+    "marital_status",
+    "repayment_status_sep",
+    "repayment_status_aug",
+    "repayment_status_jul",
+    "repayment_status_jun",
+    "repayment_status_may",
+    "repayment_status_apr",
+    "credit_limit",
+    "age",
+    "bill_amount_sep",
+    "bill_amount_aug",
+    "bill_amount_jul",
+    "bill_amount_jun",
+    "bill_amount_may",
+    "bill_amount_apr",
+    "payment_amount_sep",
+    "payment_amount_aug",
+    "payment_amount_jul",
+    "payment_amount_jun",
+    "payment_amount_may",
+    "payment_amount_apr"
+  ],
+  "id_is_feature": false,
+  "test_label_policy": "explicit_final_evaluation_only",
+  "average_precision": {
+    "canonical_key": "average_precision",
+    "legacy_alias": "pr_auc",
+    "legacy_alias_definition": "average_precision_score"
+  },
+  "duplicates": {
+    "duplicate_rows_after_first": 35,
+    "duplicate_groups": 35,
+    "cross_split_groups": 15,
+    "rows_in_cross_split_groups": 30
+  }
+}

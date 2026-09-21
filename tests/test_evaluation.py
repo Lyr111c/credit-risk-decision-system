@@ -13,6 +13,8 @@ def test_evaluate_binary_classifier_returns_hand_checkable_metrics() -> None:
 
     assert result["roc_auc"] == pytest.approx(0.75)
     assert result["pr_auc"] == pytest.approx(5 / 6)
+    assert result["average_precision"] == pytest.approx(5 / 6)
+    assert result["pr_auc"] == result["average_precision"]
     assert result["ks"] == pytest.approx(0.5)
     assert result["brier_score"] == pytest.approx(0.158125)
     assert result["threshold"] == 0.5

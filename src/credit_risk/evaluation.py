@@ -64,9 +64,12 @@ def evaluate_binary_classifier(
             mean_probability, observed_rate, nonempty_counts, strict=True
         )
     ]
+    average_precision = float(average_precision_score(y_true, y_probability))
     return {
         "roc_auc": float(roc_auc_score(y_true, y_probability)),
-        "pr_auc": float(average_precision_score(y_true, y_probability)),
+        "average_precision": average_precision,
+        # Historical compatibility alias. This is AP, not trapezoidal PR-AUC.
+        "pr_auc": average_precision,
         "ks": float(np.max(true_positive_rate - false_positive_rate)),
         "brier_score": float(brier_score_loss(y_true, y_probability)),
         "threshold": float(threshold),
