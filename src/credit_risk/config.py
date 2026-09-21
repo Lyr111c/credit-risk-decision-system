@@ -36,6 +36,13 @@ class CVConfig:
 
 
 @dataclass(frozen=True)
+class WOEConfig:
+    max_bins: int
+    min_bin_fraction: float
+    smoothing: float
+
+
+@dataclass(frozen=True)
 class ExperimentConfig:
     """Small typed view over the fields used by the P0 implementation."""
 
@@ -49,6 +56,7 @@ class ExperimentConfig:
     numeric_features: tuple[str, ...]
     split: SplitConfig
     cv: CVConfig
+    woe: WOEConfig
     raw: dict[str, Any]
 
     @property
@@ -111,6 +119,7 @@ def validate_config(raw: object) -> ExperimentConfig:
     features = _mapping(root.get("features"), "features")
     split = _mapping(root.get("split"), "split")
     cv = _mapping(root.get("cross_validation"), "cross_validation")
+    woe = _mapping(root.get("woe"), "woe")
 
     schema_version = _positive_int(root.get("schema_version"), "schema_version")
     if schema_version != 2:
@@ -152,6 +161,14 @@ def validate_config(raw: object) -> ExperimentConfig:
     folds = _positive_int(cv.get("folds"), "cross_validation.folds", minimum=2)
     if cv.get("shuffle") is not True:
         raise ConfigError("cross_validation.shuffle must be true")
+
+    max_bins = _positive_int(woe.get("max_bins"), "woe.max_bins", minimum=1)
+    min_bin_fraction = _positive_number(
+        woe.get("min_bin_fraction"), "woe.min_bin_fraction"
+    )
+    if min_bin_fraction >= 1:
+        raise ConfigError("woe.min_bin_fraction must be below 1")
+    smoothing = _positive_number(woe.get("smoothing"), "woe.smoothing")
 
     search = _mapping(root.get("model_search"), "model_search")
     if search.get("primary_metric") != "roc_auc":
@@ -231,6 +248,7 @@ def validate_config(raw: object) -> ExperimentConfig:
         numeric_features=numeric,
         split=SplitConfig(train, validation, test, True),
         cv=CVConfig(folds, True),
+        woe=WOEConfig(max_bins, min_bin_fraction, smoothing),
         raw=root,
     )
 

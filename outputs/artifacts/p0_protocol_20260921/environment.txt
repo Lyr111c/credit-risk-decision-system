@@ -9,17 +9,13 @@ matplotlib=3.11.0
 pytest=8.4.2
 xlrd=2.0.2
 data_sha256=30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933
-config_sha256=3c41d6600a11e8ba303baeb49078a706ff5d3fbea29cab1b6d13923f5e829f4e
-git_commit=215354614a50248e29bfb4439dba8ebce3d218ee
+config_sha256=132eb3dbf392cb1f54a4e95a3d92abb2ff51a8587bb76f8904164aad364a39ea
+git_commit=2164f9e7e90cb96eaa1fd6c1379529b0551735b1
 git_status_begin
-M .gitignore
- M src/credit_risk/evaluation.py
- M src/credit_risk/experiment.py
- M tests/test_evaluation.py
- M tests/test_experiment.py
-?? configs/
-?? outputs/
-?? src/credit_risk/config.py
-?? src/credit_risk/protocol.py
-?? tests/test_protocol.py
+M configs/experiment_v2.json
+ M outputs/artifacts/p0_protocol_20260921/split_manifest.json
+ M src/credit_risk/config.py
+ M tests/test_protocol.py
+?? src/credit_risk/woe.py
+?? tests/test_woe.py
 git_status_end

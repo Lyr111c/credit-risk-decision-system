@@ -46,6 +46,11 @@
     "folds": 5,
     "shuffle": true
   },
+  "woe": {
+    "max_bins": 5,
+    "min_bin_fraction": 0.05,
+    "smoothing": 0.5
+  },
   "model_search": {
     "primary_metric": "roc_auc",
     "secondary_metric": "brier_score",

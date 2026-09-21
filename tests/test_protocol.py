@@ -55,6 +55,9 @@ def test_repository_config_is_valid_and_complete() -> None:
     assert config.split.validation == pytest.approx(0.2)
     assert config.split.test == pytest.approx(0.2)
     assert config.cv.folds == 5
+    assert config.woe.max_bins == 5
+    assert config.woe.min_bin_fraction == pytest.approx(0.05)
+    assert config.woe.smoothing == pytest.approx(0.5)
     assert config.feature_columns == FEATURE_COLUMNS
     assert len(config.sha256) == 64
 
@@ -67,6 +70,9 @@ def test_repository_config_is_valid_and_complete() -> None:
         (("split", "train"), 0.5, "sum to 1"),
         (("split", "stratify"), False, "stratify"),
         (("cross_validation", "folds"), 1, "folds"),
+        (("woe", "max_bins"), 0, "woe.max_bins"),
+        (("woe", "min_bin_fraction"), 1.0, "must be below 1"),
+        (("woe", "smoothing"), 0, "woe.smoothing"),
         (("data", "sha256"), "bad", "64-character"),
         (("model_search", "max_candidates"), 13, "must not exceed 12"),
         (("score_mapping", "pdo"), None, "must be numeric"),

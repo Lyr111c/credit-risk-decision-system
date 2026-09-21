@@ -1,0 +1,46 @@
+{
+  "run_id": "p1_woe_20260921",
+  "data_sha256": "30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933",
+  "config_sha256": "132eb3dbf392cb1f54a4e95a3d92abb2ff51a8587bb76f8904164aad364a39ea",
+  "split_assignment_sha256": "dddcf606116ff3a5c91be58c126598234b6483a06a961c30a8cff2aea3a8b692",
+  "training_rows": 18000,
+  "validation_transform_rows": 6000,
+  "labels_used_for_fit": [
+    "training"
+  ],
+  "validation_labels_used": false,
+  "test_labels_used": false,
+  "parameters": {
+    "max_bins": 5,
+    "min_bin_fraction": 0.05,
+    "smoothing": 0.5,
+    "numeric_interval": "(lower, upper]",
+    "unseen_category_fallback": "OTHER if learned, else WOE=0"
+  },
+  "feature_iv": {
+    "sex": 0.007759773819776993,
+    "education": 0.0380547922573551,
+    "marital_status": 0.002882890327979509,
+    "repayment_status_sep": 0.9103407608096363,
+    "repayment_status_aug": 0.5446930935123039,
+    "repayment_status_jul": 0.41559020769525123,
+    "repayment_status_jun": 0.3535292664799675,
+    "repayment_status_may": 0.32832649225049143,
+    "repayment_status_apr": 0.28448765134268883,
+    "credit_limit": 0.17493510917648636,
+    "age": 0.013485274818886311,
+    "bill_amount_sep": 0.011986779497024213,
+    "bill_amount_aug": 0.013043310677319665,
+    "bill_amount_jul": 0.010366124939817567,
+    "bill_amount_jun": 0.010086632944349328,
+    "bill_amount_may": 0.01321381226404134,
+    "bill_amount_apr": 0.016928573873639188,
+    "payment_amount_sep": 0.1620574133846427,
+    "payment_amount_aug": 0.14731224365873014,
+    "payment_amount_jul": 0.11973533455329582,
+    "payment_amount_jun": 0.09920417423827696,
+    "payment_amount_may": 0.07730454153895602,
+    "payment_amount_apr": 0.09100190457313273
+  },
+  "binning_table_sha256": "b8ca8233ed380b6ca74ba6cd1e433360f3e4e69eb8f970f4420b7c9e9d69202c"
+}

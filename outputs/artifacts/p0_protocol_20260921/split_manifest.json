@@ -3,7 +3,7 @@
   "schema_version": 2,
   "random_seed": 42,
   "data_sha256": "30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933",
-  "config_sha256": "3c41d6600a11e8ba303baeb49078a706ff5d3fbea29cab1b6d13923f5e829f4e",
+  "config_sha256": "132eb3dbf392cb1f54a4e95a3d92abb2ff51a8587bb76f8904164aad364a39ea",
   "split_assignment_sha256": "dddcf606116ff3a5c91be58c126598234b6483a06a961c30a8cff2aea3a8b692",
   "split_counts": {
     "train": 18000,
